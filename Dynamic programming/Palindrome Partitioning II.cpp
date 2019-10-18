@@ -6,38 +6,36 @@ Given a string A, partition A such that every substring of the partition is a pa
 */
 
 
-iint Solution::minCut(string A) {
+int Solution::minCut(string A) {
     
     int n=A.size(); 
-    vector<vector<bool>> pal(n,vector<bool>(n,false));
-    vector<vector<int>> ans(n,vector<int>(n,0));
-    
-    for(int j=0; j<n; j++)
-    {
-        for(int i=j; i>=0; i--)
+        vector<vector<bool>> pal(n,vector<bool>(n,false));
+        vector<int> ans(n,0);
+
+        for(int j=0; j<n; j++)
         {
-            if(i==j){ pal[i][j]=1; continue; }
-            
-            if(A[i]==A[j] && j-i==1){ pal[i][j]=1; }
-            else if(A[i]==A[j]){ pal[i][j]=pal[i+1][j-1]; }
-            else{ pal[i][j]=0; }
-        }
-    }
-    
-    for(int j=0; j<n; j++)
-    {
-        for(int i=j; i>=0; i--)
-        {
-            if(pal[i][j]){ ans[i][j]=0;  continue; }
-            
-            int mn=INT_MAX;
-            for(int k=i; k<j; k++)
+            for(int i=j; i>=0; i--)
             {
-                mn=min(mn,1+ans[i][k]+ans[k+1][j]);
+                if(i==j){ pal[i][j]=1; continue; }
+
+                if(A[i]==A[j] && j-i==1){ pal[i][j]=1; }
+                else if(A[i]==A[j]){ pal[i][j]=pal[i+1][j-1]; }
+                else{ pal[i][j]=0; }
             }
-            ans[i][j]=mn;
         }
-    }
-    
-    return ans[0][n-1];
+
+        for(int i=n-1; i>=0; i--)
+        {
+        
+            int mn=INT_MAX;
+            for(int j=i; j<n; j++)
+            {
+                if(j==n-1 && pal[i][j]){ mn=0; continue; }
+                if(pal[i][j]){ mn=min(mn,1+ans[j+1]); }        
+            }
+            ans[i]=mn;
+
+        }
+
+        return ans[0];
 }
